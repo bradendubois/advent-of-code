@@ -141,6 +141,12 @@ void Intcode::set_register(long address, int mode, long value) {
 void Intcode::execute() {
     while (!waiting && !halted) {
 
+        /*
+        for (int i = 0; i < memory.size(); i++) {
+            cout << memory[i] << " ";
+        } cout << endl;
+        */
+       
         load_instruction();
 
         switch (operation) {
@@ -213,6 +219,7 @@ void Intcode::set() {
 void Intcode::out() {
     if (next == nullptr) {
         cout << load_register(r1, p1) << endl;
+        ins_ptr += 2;
         return;
     }
 
