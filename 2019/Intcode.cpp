@@ -135,7 +135,7 @@ void Intcode::set_register(long address, int mode, long value) {
     if (mode == 0) {
         memory[address] = value;
     } else if (mode == 2) {
-        memory[rel_ptr] = value;
+        memory[rel_ptr+address] = value;
     } else {
         cout << "REGISTER STORE ERROR" << endl;
     }
@@ -179,6 +179,9 @@ void Intcode::execute() {
                 break;
             case (8):   // Set r3 to r1==r2
                 seq();
+                break;
+            case (9):   // Set the relative base
+                srl();
                 break;
             case (99):  // Terminate
                 exit();
