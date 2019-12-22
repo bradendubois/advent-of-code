@@ -74,6 +74,9 @@ class Intcode {
         // Get the next inputted value from the input vector
         long get_next();
 
+        // Check if any inputted values are in the queue
+        void check_incoming();
+
         // Used to chain together multiple Intcode machines
         vector<long> * next = nullptr;
 };
@@ -139,7 +142,10 @@ void Intcode::set_register(long address, int mode, long value) {
 }
 
 void Intcode::execute() {
-    while (!waiting && !halted) {
+    
+    check_incoming();
+
+    while (!(halted_temporary() || halted_terminal())) {
 
         /*
         for (int i = 0; i < memory.size(); i++) {
@@ -262,6 +268,10 @@ long Intcode::get_next() {
     in.pop_back();
     reverse(in.begin(), in.end());
     return n;
+}
+
+void Intcode::check_incoming() {
+    if (in.size() > 0) waiting = false;
 }
 
 void Intcode::set(long address, long immediate) {

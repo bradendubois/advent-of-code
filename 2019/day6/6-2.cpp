@@ -12,7 +12,6 @@ int main() {
     vector<string> bodies;
     while (cin >> in) {
         s = in.substr(0,in.find(")")), t = in.substr(in.find(")") + 1);
-        cout << s << " : " << t << endl;
         if (!count[s]) {
             count[s]++;
             bodies.push_back(s);

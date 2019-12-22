@@ -72,6 +72,9 @@ class Intcode {
         // Get the next inputted value from the input vector
         long get_next();
 
+        // Check if any inputted values are in the queue
+        void check_incoming();
+
         // Used to chain together multiple Intcode machines
         vector<long> * next = nullptr;
 };
