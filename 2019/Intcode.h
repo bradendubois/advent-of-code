@@ -11,8 +11,6 @@ class Intcode {
     public:
 
         // Load a set of instructions into the machine
-        //  Resets the instruction and relative pointers
-        //  Clears the input queue
         void load_sequence(string instruction_sequence);
 
         void execute();  // Begin instruction execution
@@ -21,9 +19,17 @@ class Intcode {
         bool halted_temporary();  // Check if waiting on a value
         bool halted_terminal();   // Check if halted
 
+        // Store a value at a specific address in memory
+        void set(long address, long immediate);
+        
+        // Load a specific address from memory
+        long load(long address);
+
     private:
 
         map<long, long> memory; // Intcode memory
+        map<long, long> backup; // Backup memory to reset
+        
         long ins_ptr;   // Instruction pointer
         long rel_ptr;   // Relative pointer
 

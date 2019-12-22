@@ -11,8 +11,6 @@ class Intcode {
     public:
 
         // Load a set of instructions into the machine
-        //  Resets the instruction and relative pointers
-        //  Clears the input queue
         void load_sequence(string instruction_sequence);
 
         void execute();  // Begin instruction execution
@@ -21,9 +19,16 @@ class Intcode {
         bool halted_temporary();  // Check if waiting on a value
         bool halted_terminal();   // Check if halted
 
+        // Store a value at a specific address in memory
+        void set(long address, long immediate);
+        
+        // Load a specific address from memory
+        long load(long address);
+
     private:
 
         map<long, long> memory; // Intcode memory
+
         long ins_ptr;   // Instruction pointer
         long rel_ptr;   // Relative pointer
 
@@ -50,6 +55,9 @@ class Intcode {
         // Get the value denoted by a register and mode
         long load_register(long r, int mode);
 
+        // Save a value given a register and mode
+        void set_register(long address, int mode, long value);
+
         // ***** Instructions *****
         void add(); // 1 - Add
         void mul(); // 2 - Multiply
@@ -71,6 +79,7 @@ class Intcode {
 };
 
 void Intcode::load_sequence(string instructions) {
+
     stringstream convert(instructions);
     vector<long> seq;
 
@@ -101,9 +110,9 @@ void Intcode::load_instruction() {
     code /= 10;
     p3 = code;
 
-    r1 = load_register(memory[ins_ptr+1], p1);
-    r2 = load_register(memory[ins_ptr+2], p2);
-    r3 = load_register(memory[ins_ptr+3], p3);
+    r1 = memory[ins_ptr+1];
+    r2 = memory[ins_ptr+2];
+    r3 = memory[ins_ptr+3];
 }
 
 long Intcode::load_register(long r, int mode) {
@@ -116,6 +125,16 @@ long Intcode::load_register(long r, int mode) {
     } else {
         cout << "REGISTER DECODE ERROR" << endl;
         return 0;
+    }
+}
+
+void Intcode::set_register(long address, int mode, long value) {
+    if (mode == 0) {
+        memory[address] = value;
+    } else if (mode == 2) {
+        memory[rel_ptr] = value;
+    } else {
+        cout << "REGISTER STORE ERROR" << endl;
     }
 }
 
@@ -153,7 +172,7 @@ void Intcode::execute() {
                 exit();
                 break;
             default:
-                cout << "READ ERROR" << endl;
+                cout << "READ ERROR: Instruction and Pointer, " << memory[ins_ptr] << ", " << ins_ptr << endl;
                 break;
         };
     }
@@ -172,11 +191,13 @@ bool Intcode::halted_terminal() {
 } 
 
 void Intcode::add() {
-    memory[r3] = r1 + r2;
+    set_register(r3, p3, load_register(r1, p1) + load_register(r2, p2));
+    ins_ptr += 4;
 }
 
 void Intcode::mul() {
-    memory[r3] = r1 * r2;
+    set_register(r3, p3, load_register(r1, p1) * load_register(r2, p2));
+    ins_ptr += 4;
 }
 
 void Intcode::set() {
@@ -185,32 +206,36 @@ void Intcode::set() {
         return;
     }
 
-    memory[r1] = get_next();
+    set_register(r1, p1, get_next());
+    ins_ptr += 2;
 }
 
 void Intcode::out() {
     if (next == nullptr) {
-        cout << r1 << endl;
+        cout << load_register(r1, p1) << endl;
         return;
     }
 
-    (*next).push_back(r1);
+    (*next).push_back(load_register(r1, p1));
+    ins_ptr += 2;
 }
 
 void Intcode::bgz() {
-    ins_ptr = (r1 > 0 ? r2 : ins_ptr+3);
+    ins_ptr = (load_register(r1, p1) > 0 ? load_register(r2, p2) : ins_ptr+3);
 }
 
 void Intcode::bez() {
-    ins_ptr = (r1 == 0 ? r2 : ins_ptr+3);
+    ins_ptr = (load_register(r1, p1) == 0 ? load_register(r2, p2) : ins_ptr+3);
 }
 
 void Intcode::slt() {
-    memory[r3] = (r1 < r2 ? 1 : 0);
+    set_register(r3, p3, (load_register(r1, p1) < load_register(r2, p2) ? 1 : 0));
+    ins_ptr += 4;
 }
 
 void Intcode::seq() {
-    memory[r3] = (r1 == r2 ? 1 : 0);
+    set_register(r3, p3, (load_register(r1, p1) == load_register(r2, p2) ? 1 : 0));
+    ins_ptr += 4;
 }
 
 void Intcode::exit() {
@@ -218,7 +243,8 @@ void Intcode::exit() {
 }
 
 void Intcode::srl() {
-    rel_ptr += r1;
+    rel_ptr += load_register(r1, p1);
+    ins_ptr += 2;
 }
 
 long Intcode::get_next() {
@@ -228,4 +254,13 @@ long Intcode::get_next() {
     reverse(in.begin(), in.end());
     in.pop_back();
     reverse(in.begin(), in.end());
+    return n;
+}
+
+void Intcode::set(long address, long immediate) {
+    memory[address] = immediate;
+}
+
+long Intcode::load(long address) {
+    return memory[address];
 }
