@@ -25,6 +25,12 @@ class Intcode {
         // Load a specific address from memory
         long load(long address);
 
+        // A queue of values to be processed by code (3) instructions
+        vector<long> in;
+
+        // Used to chain together multiple Intcode machines
+        vector<long> * next = nullptr;
+
     private:
 
         map<long, long> memory; // Intcode memory
@@ -32,9 +38,6 @@ class Intcode {
         
         long ins_ptr;   // Instruction pointer
         long rel_ptr;   // Relative pointer
-
-        // A queue of values to be processed by code (3) instructions
-        vector<long> in;
 
         bool waiting = false;   // Not done, waiting on prior Intcode to send
         bool halted = false;    // Instruction set completed - halted
@@ -74,7 +77,4 @@ class Intcode {
 
         // Check if any inputted values are in the queue
         void check_incoming();
-
-        // Used to chain together multiple Intcode machines
-        vector<long> * next = nullptr;
 };
