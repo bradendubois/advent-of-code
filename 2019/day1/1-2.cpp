@@ -3,7 +3,6 @@
 
 using namespace std;
 
-// 2019 - Day 1 - Part 2
 int main() {
     int x, fuel, sum=0;
     while (cin >> x) {
