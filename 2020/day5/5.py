@@ -9,21 +9,14 @@ for line in stdin:
 
 def bsp(low, high, low_c, s):
 
-    l = low
-    h = high
+    mid = (high + low) // 2
 
-    for c in s:
+    if low == high:
+        return low
 
-        mid = (h + l) // 2
-
-        if c == low_c:
-            h = mid
-
-        else:
-            l = mid + 1
-    
-    return h
-
+    else:
+        r = (low, mid) if s[0] == low_c else (mid + 1, high)
+        return bsp(*r, low_c, s[1:])
 
 seats = set()
 
