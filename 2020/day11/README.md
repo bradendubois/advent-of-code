@@ -96,7 +96,7 @@ L.#.L..#..
 #L#L##L#L#
 #.LLLLLL.L
 #.#L#L#.##
-``
+```
 
 At this point, something interesting happens: the chaos stabilizes and further applications of these rules cause no seats to change state! Once people stop moving around, you count **``37``** occupied seats.
 
@@ -157,6 +157,7 @@ L.LLLLLL.L
 L.LLLLL.LL
 ```
 
+```
 #.##.##.##
 #######.##
 #.#.#..#..
