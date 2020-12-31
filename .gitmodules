@@ -1,0 +1,15 @@
+[submodule "advent-of-code-2015"]
+	path = advent-of-code-2015
+	url = https://github.com/bradendubois/advent-of-code-2015.git
+[submodule "advent-of-code-2017"]
+	path = advent-of-code-2017
+	url = https://github.com/bradendubois/advent-of-code-2017.git
+[submodule "advent-of-code-2018"]
+	path = advent-of-code-2018
+	url = https://github.com/bradendubois/advent-of-code-2018.git
+[submodule "advent-of-code-2019"]
+	path = advent-of-code-2019
+	url = https://github.com/bradendubois/advent-of-code-2019.git
+[submodule "advent-of-code-2020"]
+	path = advent-of-code-2020
+	url = https://github.com/bradendubois/advent-of-code-2020.git
